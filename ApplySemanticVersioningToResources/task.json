@@ -1,0 +1,55 @@
+{
+    "id": "2c0130d1-92e0-4bac-b340-c37eb87c6f38",
+    "name": "ApplySemanticVersioningToResources",
+    "friendlyName": "Apply Semantic Versioning to Resources",
+    "description": "Sets version attributes in *.rc files in a manner which is compatible with NuGet and Semantic Versioning 2.0.0.",
+    "helpMarkDown": "[More Information](https://github.com/filippobottega/vso-agent-tasks/)",
+    "category": "Utility",
+    "visibility": [
+                  "Build"
+                  ],    
+    "author": "Filippo Bottega",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [
+        "DotNetFramework"
+    ],
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        { 
+            "name": "pattern", 
+            "type": "string",
+            "label": "Build Number Pattern", 
+            "defaultValue": "\\d+\\.\\d+\\.\\d+\\.\\d+",
+            "required": true,
+            "helpMarkDown": "The pattern to extract the four version numbers from the build number. This must match exactly four entries separated by the split characters.",
+            "groupName": "advanced"
+        },
+        { 
+            "name": "patternSplitCharacters", 
+            "type": "string",
+            "label": "Split Characters", 
+            "defaultValue": ".",
+            "required": true,
+            "helpMarkDown": "The characters to split up the matched string from the build number. Simply just list all required characters. No comma separation needed.",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Apply Semantic Versioning to Resources",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\ApplySemanticVersioningToResources.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
