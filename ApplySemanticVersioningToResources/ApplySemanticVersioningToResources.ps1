@@ -63,6 +63,7 @@ gci -Path $pathToSearch -Filter $searchFilter -Recurse | %{
     $content = Replace-Pattern -content $content -pattern 'PRODUCTVERSION.*$' -replacement "PRODUCTVERSION $commaFileVersion"
     $content = Replace-Pattern -content $content -pattern 'VALUE "FileVersion",.*$' -replacement "VALUE ""FileVersion"", ""$dotFileVersion"""
     $content = Replace-Pattern -content $content -pattern 'VALUE "ProductVersion",.*$' -replacement "VALUE ""ProductVersion"", ""$dotFileVersion"""
-    $content | sc $_.FullName -Encoding UTF8
+	$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
+	[System.IO.File]::WriteAllLines($_.FullName, $content, $Utf8NoBomEncoding)
 }
 Write-Host "Done!"
