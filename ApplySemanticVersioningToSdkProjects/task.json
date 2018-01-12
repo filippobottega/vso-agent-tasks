@@ -1,0 +1,55 @@
+{
+    "id": "85d708a0-4b5e-4d2e-8fbf-afc47df90f7e",
+    "name": "ApplySemanticVersioningToSdkProjects",
+    "friendlyName": "Apply Semantic Versioning to Sdk Projects",
+    "description": "Sets Version attribute in *.vbproj and *.csproj files in a manner which is compatible with NuGet and Semantic Versioning 2.0.0.",
+    "helpMarkDown": "[More Information](https://github.com/filippobottega/vso-agent-tasks/)",
+    "category": "Utility",
+    "visibility": [
+                  "Build"
+                  ],    
+    "author": "Filippo Bottega",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [
+        "DotNetFramework"
+    ],
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        { 
+            "name": "pattern", 
+            "type": "string",
+            "label": "Build Number Pattern", 
+            "defaultValue": "\\d+\\.\\d+\\.\\d+\\.\\d+",
+            "required": true,
+            "helpMarkDown": "The pattern to extract the four version numbers from the build number. This must match exactly four entries separated by the split characters.",
+            "groupName": "advanced"
+        },
+        { 
+            "name": "patternSplitCharacters", 
+            "type": "string",
+            "label": "Split Characters", 
+            "defaultValue": ".",
+            "required": true,
+            "helpMarkDown": "The characters to split up the matched string from the build number. Simply just list all required characters. No comma separation needed.",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Apply Semantic Versioning to Sdk Projects",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\ApplySemanticVersioningToSdkProjects.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
