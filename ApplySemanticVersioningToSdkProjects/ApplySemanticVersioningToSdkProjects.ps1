@@ -7,7 +7,6 @@ Param(
 
 $ErrorActionPreference = "Stop"
 
-$searchFilter = "*.vbproj;*.csproj"
 if ($buildNumber -match $pattern -ne $true) {
     Write-Host "Could not extract a version from [$buildNumber] using pattern [$pattern]"
     exit 2
@@ -49,7 +48,7 @@ $dotFileVersion = Get-VersionString -separator "." -numberOfVersions "3" -extrac
 
 Write-Host "Using file version $dotFileVersion"
 
-gci -Path $pathToSearch -Filter $searchFilter -Recurse | %{
+gci -Path $pathToSearch -Recurse | where {$_.extension -in ".vbproj",".csproj"} | %{
     Write-Host "  -> Changing $($_.FullName)"
          
     # remove the read-only bit on the file
@@ -57,7 +56,7 @@ gci -Path $pathToSearch -Filter $searchFilter -Recurse | %{
  
     # run the regex replace
     $content = gc $_.FullName
-    $content = Replace-Pattern -content $content -pattern '\<Version\>.*\<\/Version\>' -replacement "\<Version\>$dotFileVersion\<\/Version\>"
+    $content = Replace-Pattern -content $content -pattern '\<Version\>.*\<\/Version\>' -replacement "<Version>$dotFileVersion</Version>"
 	$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
 	[System.IO.File]::WriteAllLines($_.FullName, $content, $Utf8NoBomEncoding)
 }

@@ -1,7 +1,7 @@
 {
     "id": "85d708a0-4b5e-4d2e-8fbf-afc47df90f7e",
     "name": "ApplySemanticVersioningToSdkProjects",
-    "friendlyName": "Apply Semantic Versioning to Sdk Projects",
+    "friendlyName": "Apply Semantic Versioning to Sdk Proj",
     "description": "Sets Version attribute in *.vbproj and *.csproj files in a manner which is compatible with NuGet and Semantic Versioning 2.0.0.",
     "helpMarkDown": "[More Information](https://github.com/filippobottega/vso-agent-tasks/)",
     "category": "Utility",
