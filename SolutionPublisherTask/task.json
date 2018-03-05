@@ -1,5 +1,5 @@
 {
-    "id": "85d708a0-4b5e-4d2e-8fbf-afc47df90f7e",
+    "id": "c4d96431-d338-410d-947a-ebfde1ff0ed4",
     "name": "SolutionPublisherTask",
     "friendlyName": "Publish solution",
     "description": "Apply source code transformations to allow the publish of source codes. Apply semantic version, unbind from source code and others",
@@ -29,7 +29,7 @@
             "name": "SolutionPublisherDirectory", 
             "type": "string", 
             "label": "SolutionPublisher directory", 
-            "defaultValue": "C:\Program Files\SolutionPublisher", 
+            "defaultValue": "C:\\Program Files\\SolutionPublisher", 
             "required": true,
             "helpMarkDown": "The directory containing SolutionPublisher.exe file",
             "visibleRule": "makeReleaseVersion = false"
