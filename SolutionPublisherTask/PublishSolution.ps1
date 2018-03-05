@@ -35,7 +35,7 @@ Add-Type -AssemblyName System.Web
 # Replace tags
 
 $encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$rootPath' -replacement $rootPath
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$buildNumber' -replacement $buildNumber7
+$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$buildNumber' -replacement $buildNumber
 
 # Run SolutionPublisher
 $solutionPublisherPath = [System.IO.Path]::Combine($solutionPublisherDirectory,'SolutionPublisher.exe')
