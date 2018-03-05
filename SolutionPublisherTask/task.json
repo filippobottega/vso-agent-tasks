@@ -32,7 +32,6 @@
             "defaultValue": "C:\\Program Files\\SolutionPublisher", 
             "required": true,
             "helpMarkDown": "The directory containing SolutionPublisher.exe file",
-            "visibleRule": "makeReleaseVersion = false"
         },
         { 
             "name": "EncodedUrlConfiguration", 
@@ -41,7 +40,6 @@
             "defaultValue": "", 
             "required": true,
             "helpMarkDown": "The configuration xml encoded as url using HttpUtility.UrlEncode function. Add $rootPath and $buildNumber tags to the configuration.",
-            "visibleRule": "makeReleaseVersion = false"
         }
 	],
     "instanceNameFormat": "Publish solution",
