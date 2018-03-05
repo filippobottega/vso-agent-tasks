@@ -1,0 +1,55 @@
+{
+    "id": "85d708a0-4b5e-4d2e-8fbf-afc47df90f7e",
+    "name": "SolutionPublisherTask",
+    "friendlyName": "Publish solution",
+    "description": "Apply source code transformations to allow the publish of source codes. Apply semantic version, unbind from source code and others",
+    "helpMarkDown": "[More Information](https://github.com/filippobottega/vso-agent-tasks/)",
+    "category": "Utility",
+    "visibility": [
+                  "Build"
+                  ],    
+    "author": "Filippo Bottega",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [
+        "DotNetFramework"
+    ],
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        { 
+            "name": "SolutionPublisherDirectory", 
+            "type": "string", 
+            "label": "SolutionPublisher directory", 
+            "defaultValue": "C:\Program Files\SolutionPublisher", 
+            "required": true,
+            "helpMarkDown": "The directory containing SolutionPublisher.exe file",
+            "visibleRule": "makeReleaseVersion = false"
+        },
+        { 
+            "name": "EncodedUrlConfiguration", 
+            "type": "string", 
+            "label": "Configuration encoded as url", 
+            "defaultValue": "", 
+            "required": true,
+            "helpMarkDown": "The configuration xml encoded as url using HttpUtility.UrlEncode function. Add $rootPath and $buildNumber tags to the configuration.",
+            "visibleRule": "makeReleaseVersion = false"
+        }
+	],
+    "instanceNameFormat": "Publish solution",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\PublishSolution.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
