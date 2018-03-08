@@ -37,7 +37,7 @@ Add-Type -AssemblyName System.Web
 
 # Replace tags
 
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$buildVersion$' -replacement $buildVersion
+$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildVersion$' -replacement $buildVersion
 
 $encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentBuildDirectory$' -replacement $env:AGENT_BUILDDIRECTORY
 $encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentHomeDirectory$' -replacement $env:AGENT_HOMEDIRECTORY
