@@ -1,12 +1,14 @@
 Param(
-  [string]$rootPath = $env:BUILD_SOURCESDIRECTORY,
-  [string]$buildNumber = $env:BUILD_BUILDNUMBER,
-  [regex]$pattern = "\d+\.\d+\.\d+\.\d+",
-  [string]$patternSplitCharacters = ".",
   [string]$solutionPublisherDirectory = "C:\Program Files\SolutionPublisher",
-  [string]$encodedUrlConfiguration = ""
+  [string]$configurationRelativePath = "BuildConfigurations\SolutionPublisherConfiguration.xml"
 )
-	
+
+# Variables
+$rootPath = $env:BUILD_SOURCESDIRECTORY
+$buildNumber = $env:BUILD_BUILDNUMBER
+$pattern = "\d+\.\d+\.\d+\.\d+"
+$patternSplitCharacters = "."
+
 # Check $buildNumber
 	
 if ($buildNumber -match $pattern -ne $true) {
@@ -23,69 +25,74 @@ $buildVersion = [string]::Join(([char[]]$patternSplitCharacters),($extractedBuil
 
 # Declare functions
 
-function Replace-Tag($encodedContent, $tagName, $replacement) {
+function Replace-Tag($configurationContent, $tagName, $replacement) {
 
 	$encodedTagName = [System.Web.HttpUtility]::UrlEncode($tagName)
 	$encodedReplacement = [System.Web.HttpUtility]::UrlEncode($replacement)
-    $encodedContent = $encodedContent.Replace($encodedTagName, $encodedReplacement)
-	return $encodedContent
+    $configurationContent = $configurationContent.Replace($encodedTagName, $encodedReplacement)
+	return $configurationContent
 }
 
 # Add types
 
 Add-Type -AssemblyName System.Web
 
-# Replace tags
+# Update configuration replacing tags
 
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildVersion$' -replacement $buildVersion
+$configurationContent = [System.IO.File]::ReadAllText([System.IO.Path]::Combine($rootPath, $configurationRelativePath))
 
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentBuildDirectory$' -replacement $env:AGENT_BUILDDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentHomeDirectory$' -replacement $env:AGENT_HOMEDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentId$' -replacement $env:AGENT_ID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentJobStatus$' -replacement $env:AGENT_JOBSTATUS
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentMachineName$' -replacement $env:AGENT_MACHINENAME
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentName$' -replacement $env:AGENT_NAME
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$AgentWorkFolder$' -replacement $env:AGENT_WORKFOLDER
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildArtifactStagingDirectory$' -replacement $env:BUILD_ARTIFACTSTAGINGDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildBuildId$' -replacement $env:BUILD_BUILDID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildBuildNumber$' -replacement $env:BUILD_BUILDNUMBER
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildBuildUri$' -replacement $env:BUILD_BUILDURI
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildBinariesDirectory$' -replacement $env:BUILD_BINARIESDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildDefinitionName$' -replacement $env:BUILD_DEFINITIONNAME
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildDefinitionVersion$' -replacement $env:BUILD_DEFINITIONVERSION
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildQueuedBy$' -replacement $env:BUILD_QUEUEDBY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildQueuedById$' -replacement $env:BUILD_QUEUEDBYID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildReason$' -replacement $env:BUILD_REASON
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRepositoryClean$' -replacement $env:BUILD_REPOSITORY_CLEAN
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRepositoryLocalPath$' -replacement $env:BUILD_REPOSITORY_LOCALPATH
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRepositoryName$' -replacement $env:BUILD_REPOSITORY_NAME
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRepositoryProvider$' -replacement $env:BUILD_REPOSITORY_PROVIDER
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRepositoryTfvcWorkspace$' -replacement $env:BUILD_REPOSITORY_TFVC_WORKSPACE
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRepositoryUri$' -replacement $env:BUILD_REPOSITORY_URI
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRequestedFor$' -replacement $env:BUILD_REQUESTEDFOR
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRequestedForEmail$' -replacement $env:BUILD_REQUESTEDFOREMAIL
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRequestedForId$' -replacement $env:BUILD_REQUESTEDFORID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildSourceBranch$' -replacement $env:BUILD_SOURCEBRANCH
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildSourceBranchName$' -replacement $env:BUILD_SOURCEBRANCHNAME
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildSourcesDirectory$' -replacement $env:BUILD_SOURCESDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildSourceVersion$' -replacement $env:BUILD_SOURCEVERSION
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildStagingDirectory$' -replacement $env:BUILD_STAGINGDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildRepositoryGitSubmoduleCheckout$' -replacement $env:BUILD_REPOSITORY_GIT_SUBMODULECHECKOUT
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$BuildSourceTfvcShelveset$' -replacement $env:BUILD_SOURCETFVCSHELVESET
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$CommonTestResultsDirectory$' -replacement $env:COMMON_TESTRESULTSDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemAccessToken$' -replacement $env:SYSTEM_ACCESSTOKEN
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemCollectionId$' -replacement $env:SYSTEM_COLLECTIONID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemDefaultWorkingDirectory$' -replacement $env:SYSTEM_DEFAULTWORKINGDIRECTORY
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemDefinitionId$' -replacement $env:SYSTEM_DEFINITIONID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemPullRequestIsFork$' -replacement $env:SYSTEM_PULLREQUEST_ISFORK
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemPullRequestPullRequestId$' -replacement $env:SYSTEM_PULLREQUEST_PULLREQUESTID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemPullRequestSourceBranch$' -replacement $env:SYSTEM_PULLREQUEST_SOURCEBRANCH
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemPullRequestSourceRepositoryURI$' -replacement $env:SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemPullRequestTargetBranch$' -replacement $env:SYSTEM_PULLREQUEST_TARGETBRANCH
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemTeamFoundationCollectionUri$' -replacement $env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemTeamProject$' -replacement $env:SYSTEM_TEAMPROJECT
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$SystemTeamProjectId$' -replacement $env:SYSTEM_TEAMPROJECTID
-$encodedUrlConfiguration = Replace-Tag -encodedContent $encodedUrlConfiguration -tagName '$TfBuild$' -replacement $env:TF_BUILD
+$configurationContent = $configurationContent.Replace('$BuildVersion$', $buildVersion)
+
+$configurationContent = $configurationContent.Replace('$AgentBuildDirectory$',  $env:AGENT_BUILDDIRECTORY)
+$configurationContent = $configurationContent.Replace('$AgentHomeDirectory$',  $env:AGENT_HOMEDIRECTORY)
+$configurationContent = $configurationContent.Replace('$AgentId$',  $env:AGENT_ID)
+$configurationContent = $configurationContent.Replace('$AgentJobStatus$',  $env:AGENT_JOBSTATUS)
+$configurationContent = $configurationContent.Replace('$AgentMachineName$',  $env:AGENT_MACHINENAME)
+$configurationContent = $configurationContent.Replace('$AgentName$',  $env:AGENT_NAME)
+$configurationContent = $configurationContent.Replace('$AgentWorkFolder$',  $env:AGENT_WORKFOLDER)
+$configurationContent = $configurationContent.Replace('$BuildArtifactStagingDirectory$',  $env:BUILD_ARTIFACTSTAGINGDIRECTORY)
+$configurationContent = $configurationContent.Replace('$BuildBuildId$',  $env:BUILD_BUILDID)
+$configurationContent = $configurationContent.Replace('$BuildBuildNumber$',  $env:BUILD_BUILDNUMBER)
+$configurationContent = $configurationContent.Replace('$BuildBuildUri$',  $env:BUILD_BUILDURI)
+$configurationContent = $configurationContent.Replace('$BuildBinariesDirectory$',  $env:BUILD_BINARIESDIRECTORY)
+$configurationContent = $configurationContent.Replace('$BuildDefinitionName$',  $env:BUILD_DEFINITIONNAME)
+$configurationContent = $configurationContent.Replace('$BuildDefinitionVersion$',  $env:BUILD_DEFINITIONVERSION)
+$configurationContent = $configurationContent.Replace('$BuildQueuedBy$',  $env:BUILD_QUEUEDBY)
+$configurationContent = $configurationContent.Replace('$BuildQueuedById$',  $env:BUILD_QUEUEDBYID)
+$configurationContent = $configurationContent.Replace('$BuildReason$',  $env:BUILD_REASON)
+$configurationContent = $configurationContent.Replace('$BuildRepositoryClean$',  $env:BUILD_REPOSITORY_CLEAN)
+$configurationContent = $configurationContent.Replace('$BuildRepositoryLocalPath$',  $env:BUILD_REPOSITORY_LOCALPATH)
+$configurationContent = $configurationContent.Replace('$BuildRepositoryName$',  $env:BUILD_REPOSITORY_NAME)
+$configurationContent = $configurationContent.Replace('$BuildRepositoryProvider$',  $env:BUILD_REPOSITORY_PROVIDER)
+$configurationContent = $configurationContent.Replace('$BuildRepositoryTfvcWorkspace$',  $env:BUILD_REPOSITORY_TFVC_WORKSPACE)
+$configurationContent = $configurationContent.Replace('$BuildRepositoryUri$',  $env:BUILD_REPOSITORY_URI)
+$configurationContent = $configurationContent.Replace('$BuildRequestedFor$',  $env:BUILD_REQUESTEDFOR)
+$configurationContent = $configurationContent.Replace('$BuildRequestedForEmail$',  $env:BUILD_REQUESTEDFOREMAIL)
+$configurationContent = $configurationContent.Replace('$BuildRequestedForId$',  $env:BUILD_REQUESTEDFORID)
+$configurationContent = $configurationContent.Replace('$BuildSourceBranch$',  $env:BUILD_SOURCEBRANCH)
+$configurationContent = $configurationContent.Replace('$BuildSourceBranchName$',  $env:BUILD_SOURCEBRANCHNAME)
+$configurationContent = $configurationContent.Replace('$BuildSourcesDirectory$',  $env:BUILD_SOURCESDIRECTORY)
+$configurationContent = $configurationContent.Replace('$BuildSourceVersion$',  $env:BUILD_SOURCEVERSION)
+$configurationContent = $configurationContent.Replace('$BuildStagingDirectory$',  $env:BUILD_STAGINGDIRECTORY)
+$configurationContent = $configurationContent.Replace('$BuildRepositoryGitSubmoduleCheckout$',  $env:BUILD_REPOSITORY_GIT_SUBMODULECHECKOUT)
+$configurationContent = $configurationContent.Replace('$BuildSourceTfvcShelveset$',  $env:BUILD_SOURCETFVCSHELVESET)
+$configurationContent = $configurationContent.Replace('$CommonTestResultsDirectory$',  $env:COMMON_TESTRESULTSDIRECTORY)
+$configurationContent = $configurationContent.Replace('$SystemAccessToken$',  $env:SYSTEM_ACCESSTOKEN)
+$configurationContent = $configurationContent.Replace('$SystemCollectionId$',  $env:SYSTEM_COLLECTIONID)
+$configurationContent = $configurationContent.Replace('$SystemDefaultWorkingDirectory$',  $env:SYSTEM_DEFAULTWORKINGDIRECTORY)
+$configurationContent = $configurationContent.Replace('$SystemDefinitionId$',  $env:SYSTEM_DEFINITIONID)
+$configurationContent = $configurationContent.Replace('$SystemPullRequestIsFork$',  $env:SYSTEM_PULLREQUEST_ISFORK)
+$configurationContent = $configurationContent.Replace('$SystemPullRequestPullRequestId$',  $env:SYSTEM_PULLREQUEST_PULLREQUESTID)
+$configurationContent = $configurationContent.Replace('$SystemPullRequestSourceBranch$',  $env:SYSTEM_PULLREQUEST_SOURCEBRANCH)
+$configurationContent = $configurationContent.Replace('$SystemPullRequestSourceRepositoryURI$',  $env:SYSTEM_PULLREQUEST_SOURCEREPOSITORYURI)
+$configurationContent = $configurationContent.Replace('$SystemPullRequestTargetBranch$',  $env:SYSTEM_PULLREQUEST_TARGETBRANCH)
+$configurationContent = $configurationContent.Replace('$SystemTeamFoundationCollectionUri$',  $env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)
+$configurationContent = $configurationContent.Replace('$SystemTeamProject$',  $env:SYSTEM_TEAMPROJECT)
+$configurationContent = $configurationContent.Replace('$SystemTeamProjectId$',  $env:SYSTEM_TEAMPROJECTID)
+$configurationContent = $configurationContent.Replace('$TfBuild$',  $env:TF_BUILD)
+
+
+$encodedUrlConfiguration = [System.Web.HttpUtility]::UrlEncode($configurationContent)
 
 # Run SolutionPublisher
 $solutionPublisherPath = [System.IO.Path]::Combine($solutionPublisherDirectory,'SolutionPublisher.exe')

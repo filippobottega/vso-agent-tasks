@@ -34,12 +34,12 @@
             "helpMarkDown": "The directory containing SolutionPublisher.exe file"
         },
         { 
-            "name": "EncodedUrlConfiguration", 
+            "name": "ConfigurationRelativePath", 
             "type": "string", 
-            "label": "Configuration encoded as url", 
-            "defaultValue": "", 
+            "label": "Relative path of configuration xml file", 
+            "defaultValue": "BuildConfigurations\\SolutionPublisherConfiguration.xml", 
             "required": true,
-            "helpMarkDown": "The configuration xml encoded as url using HttpUtility.UrlEncode function. Add $rootPath and $buildNumber tags to the configuration."
+            "helpMarkDown": "Relative path of configuration xml file"
         }
 	],
     "instanceNameFormat": "Publish solution",
